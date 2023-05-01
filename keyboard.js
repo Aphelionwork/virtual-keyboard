@@ -51,7 +51,15 @@ const Keyboard = {
     this.elements.mainInputForm.appendChild(this.elements.inputForm);
     this.elements.mainWrapper.appendChild(this.elements.mainKeyboard);
     this.elements.mainKeyboard.appendChild(this.elements.keysContainer);
-    
+
+    //Automatically use keyboard for elements with .input-view
+    document.querySelectorAll(".input-view").forEach(element => {
+        element.addEventListener("focus", () => {
+          this.open(element.value, currentValue => {
+          element.value = currentValue;
+          });
+        });
+    });
   },
 
     _createKeys() {
@@ -277,19 +285,21 @@ const Keyboard = {
   },
 
   open(initialValue, oninput, onclose) {
-
+    this.properties.value = initialValue || "";
+    this.eventHandlers.oninput = oninput;
+    this.eventHandlers.onclose = onclose;
   },
 
   close() {
-    console.log ("Вызов закрытия");
     this.properties.value = "";
     this.eventHandlers.oninput = oninput;
     this.eventHandlers.onclose = onclose;
     this.elements.mainKeyboard.classList.add("keyboard--hidden");
-    }
+  }
   
 };
 
 window.addEventListener("DOMContentLoaded",function() {
     Keyboard.init();
 });
+
